@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JJRifas | ¡La suerte te espera!</title>
+  <meta name="description" content="Página oficial de rifas JJRifas con selección de números y carga de comprobantes." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <nav class="nav">
+      <img src="" data-b64-image="assets/logo.webp.b64" alt="JJRifas" class="nav-logo" />
+      <div class="nav-actions">
+        <a href="#numeros" class="btn btn-ghost">Ver números</a>
+        <button class="btn btn-admin" id="openAdminBtn" type="button">Admin</button>
+      </div>
+    </nav>
+
+    <section class="hero-content">
+      <div class="hero-text">
+        <p class="eyebrow">Rifa activa</p>
+        <h1>¡La suerte te espera!</h1>
+        <p class="lead">Elige tu número, carga tu comprobante y espera la verificación. Solo hay <strong>100 números disponibles</strong>.</p>
+        <div class="hero-stats">
+          <div><span id="availableCount">100</span><small>Disponibles</small></div>
+          <div><span id="pendingCount">0</span><small>Por verificar</small></div>
+          <div><span id="soldCount">0</span><small>Pagados</small></div>
+        </div>
+        <a class="btn btn-primary" href="#numeros">Participar ahora</a>
+      </div>
+      <div class="hero-card">
+        <img src="" data-b64-image="assets/logo.webp.b64" alt="JJRifas" />
+        <div class="price-card">
+          <span>Valor del número</span>
+          <strong id="ticketPrice">$5</strong>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="section info-grid">
+      <article class="info-card">
+        <span class="icon">①</span>
+        <h3>Selecciona</h3>
+        <p>Escoge uno o varios números disponibles dentro del tablero.</p>
+      </article>
+      <article class="info-card">
+        <span class="icon">②</span>
+        <h3>Paga</h3>
+        <p>Realiza el pago por el método indicado y guarda tu comprobante.</p>
+      </article>
+      <article class="info-card">
+        <span class="icon">③</span>
+        <h3>Verifica</h3>
+        <p>Sube el comprobante. El número quedará reservado hasta aprobarse.</p>
+      </article>
+    </section>
+
+    <section class="section prize-section">
+      <div>
+        <p class="eyebrow">Premio</p>
+        <h2>Configura aquí el premio principal</h2>
+        <p>Este ZIP está listo para personalizar el nombre del premio, precio, métodos de pago y datos de contacto desde el archivo <strong>app.js</strong>.</p>
+      </div>
+      <div class="payment-box">
+        <h3>Datos de pago</h3>
+        <p><strong>Pago móvil:</strong> 0000-0000000</p>
+        <p><strong>Titular:</strong> JJRifas</p>
+        <p><strong>Documento:</strong> V-00000000</p>
+        <p><strong>WhatsApp:</strong> +56 9 2873 3069</p>
+      </div>
+    </section>
+
+    <section class="section" id="numeros">
+      <div class="section-title">
+        <p class="eyebrow">Tablero oficial</p>
+        <h2>Elige tus números</h2>
+        <p>Verde: disponible · Dorado: seleccionado · Amarillo: por aprobar · Rojo: aprobado con comprobante</p>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-small" id="selectRandomBtn" type="button">Elegir aleatorio</button>
+        <button class="btn btn-small btn-ghost" id="clearSelectionBtn" type="button">Limpiar selección</button>
+      </div>
+
+      <div class="numbers-grid" id="numbersGrid" aria-label="Números de la rifa"></div>
+    </section>
+
+    <section class="section checkout-section">
+      <div class="checkout-card">
+        <div class="checkout-header">
+          <div>
+            <p class="eyebrow">Reserva</p>
+            <h2>Datos del participante</h2>
+          </div>
+          <div class="selected-box">
+            <small>Números</small>
+            <strong id="selectedNumbersLabel">Ninguno</strong>
+          </div>
+        </div>
+
+        <form id="reservationForm" class="form">
+          <div class="form-row">
+            <label>Nombre completo
+              <input type="text" id="customerName" required placeholder="Ej: María Pérez" />
+            </label>
+            <label>Cédula / Documento
+              <input type="text" id="customerId" required placeholder="Ej: V-12345678" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Teléfono / WhatsApp
+              <input type="tel" id="customerPhone" required placeholder="Ej: +58 000-0000000" />
+            </label>
+            <label>Referencia de pago
+              <input type="text" id="paymentRef" required placeholder="Últimos 6 dígitos o referencia" />
+            </label>
+          </div>
+          <label>Comprobante de pago
+            <input type="file" id="receiptFile" accept="image/*,.pdf" required />
+          </label>
+          <div class="total-line">
+            <span>Total a pagar</span>
+            <strong id="totalAmount">$0</strong>
+          </div>
+          <button class="btn btn-primary btn-full" type="submit">Enviar comprobante para verificar</button>
+          <p class="form-note">Al enviar, tus números quedarán bloqueados como “por verificar”. Si el pago se rechaza, se liberan automáticamente.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <img src="" data-b64-image="assets/logo.webp.b64" alt="JJRifas" />
+    <p>© <span id="year"></span> JJRifas. Todos los derechos reservados.</p>
+  </footer>
+
+  <div class="modal" id="adminModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-admin></div>
+    <section class="modal-panel">
+      <button class="modal-close" data-close-admin type="button">×</button>
+      <div id="adminLogin">
+        <p class="eyebrow">Panel privado</p>
+        <h2>Administración</h2>
+        <p>Ingresa la clave para revisar comprobantes, aprobar pagos o liberar números.</p>
+        <input type="password" id="adminPassword" placeholder="Clave admin" />
+        <button class="btn btn-primary btn-full" id="loginAdminBtn" type="button">Entrar</button>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <div class="admin-head">
+          <div>
+            <p class="eyebrow">Comprobantes</p>
+            <h2>Verificación de pagos</h2>
+          </div>
+          <div class="admin-actions">
+            <button class="btn btn-small" id="exportDataBtn" type="button">Exportar datos</button>
+            <button class="btn btn-small btn-danger" id="resetDataBtn" type="button">Reiniciar rifa</button>
+          </div>
+        </div>
+        <div id="adminList" class="admin-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <a class="whatsapp-float" href="https://wa.me/56928733069" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <img src="" data-b64-image="assets/whatsapp.webp.b64" alt="WhatsApp" />
+  </a>
+
+
+  <script>
+    document.querySelectorAll('[data-b64-image]').forEach(async (img) => {
+      try {
+        const file = img.getAttribute('data-b64-image');
+        const res = await fetch(file);
+        const b64 = await res.text();
+        img.src = 'data:image/webp;base64,' + b64.trim();
+      } catch (error) {
+        console.warn('No se pudo cargar imagen embebida', error);
+      }
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
