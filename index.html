@@ -22,10 +22,10 @@
       <div class="hero-text">
         <p class="eyebrow">Rifa activa</p>
         <h1>¡La suerte te espera!</h1>
-        <p class="lead">Elige tu número, carga tu comprobante y espera la verificación. Solo hay <strong>100 números disponibles</strong>.</p>
+        <p class="lead">Elige tu número, carga tu comprobante y espera la verificación. Puedes pagar completo o apartar tu número con pago parcial.</p>
         <div class="hero-stats">
           <div><span id="availableCount">100</span><small>Disponibles</small></div>
-          <div><span id="pendingCount">0</span><small>Por verificar</small></div>
+          <div><span id="pendingCount">0</span><small>Parciales / por verificar</small></div>
           <div><span id="soldCount">0</span><small>Pagados</small></div>
         </div>
         <a class="btn btn-primary" href="#numeros">Participar ahora</a>
@@ -34,7 +34,7 @@
         <img src="assets/logo.svg" alt="JJRifas" />
         <div class="price-card">
           <span>Valor del número</span>
-          <strong id="ticketPrice">$5</strong>
+          <strong id="ticketPrice">$20</strong>
         </div>
       </div>
     </section>
@@ -50,12 +50,12 @@
       <article class="info-card">
         <span class="icon">②</span>
         <h3>Paga</h3>
-        <p>Realiza el pago por el método indicado y guarda tu comprobante.</p>
+        <p>Realiza pago completo de $20 o pago parcial de $10 para apartar tu número.</p>
       </article>
       <article class="info-card">
         <span class="icon">③</span>
         <h3>Verifica</h3>
-        <p>Sube el comprobante. El número quedará reservado hasta aprobarse.</p>
+        <p>Los pagos parciales quedan en amarillo. Al completar el pago, el número pasa a rojo.</p>
       </article>
     </section>
 
@@ -63,14 +63,14 @@
       <div>
         <p class="eyebrow">Premio</p>
         <h2>Configura aquí el premio principal</h2>
-        <p>Este ZIP está listo para personalizar el nombre del premio, precio, métodos de pago y datos de contacto desde el archivo <strong>app.js</strong>.</p>
+        <p>El boleto tiene un valor de <strong>$20</strong>. También puedes apartar tu número con un pago parcial de <strong>$10</strong> y completar el restante luego.</p>
       </div>
       <div class="payment-box">
         <h3>Datos de pago</h3>
-        <p><strong>Pago móvil:</strong> 0000-0000000</p>
+        <p><strong>Pago completo:</strong> $20</p>
+        <p><strong>Pago parcial:</strong> $10</p>
         <p><strong>Titular:</strong> JJRifas</p>
-        <p><strong>Documento:</strong> V-00000000</p>
-        <p><strong>WhatsApp:</strong> +56 9 2873 3069</p>
+        <p><strong>WhatsApp:</strong> +58 424-7130467</p>
       </div>
     </section>
 
@@ -78,7 +78,7 @@
       <div class="section-title">
         <p class="eyebrow">Tablero oficial</p>
         <h2>Elige tus números</h2>
-        <p>Verde: disponible · Dorado: seleccionado · Amarillo: por aprobar · Rojo: aprobado con comprobante</p>
+        <p>Verde: disponible · Dorado: seleccionado · Amarillo: por aprobar o pago parcial · Rojo: pago completo aprobado</p>
       </div>
 
       <div class="toolbar">
@@ -103,6 +103,17 @@
         </div>
 
         <form id="reservationForm" class="form">
+          <div class="payment-options">
+            <label class="payment-option">
+              <input type="radio" name="paymentType" value="full" checked />
+              <span><strong>Pago completo</strong><small>$20 por número</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="paymentType" value="partial" />
+              <span><strong>Pago parcial</strong><small>$10 por número para apartar</small></span>
+            </label>
+          </div>
+
           <div class="form-row">
             <label>Nombre completo
               <input type="text" id="customerName" required placeholder="Ej: María Pérez" />
@@ -123,11 +134,11 @@
             <input type="file" id="receiptFile" accept="image/*,.pdf" required />
           </label>
           <div class="total-line">
-            <span>Total a pagar</span>
+            <span>Total reportado</span>
             <strong id="totalAmount">$0</strong>
           </div>
           <button class="btn btn-primary btn-full" type="submit">Enviar comprobante para verificar</button>
-          <p class="form-note">Al enviar, tus números quedarán bloqueados como “por verificar”. Si el pago se rechaza, se liberan automáticamente.</p>
+          <p class="form-note">El pago parcial bloquea el número en amarillo. Cuando el administrador confirme el pago restante, el número pasará a rojo.</p>
         </form>
       </div>
     </section>
@@ -135,7 +146,8 @@
 
   <footer class="footer">
     <img src="assets/logo.svg" alt="JJRifas" />
-    <p>© <span id="year"></span> JJRifas. Todos los derechos reservados.</p>
+    <p>CREADO POR: MANUEL PIÑANGO</p>
+    <a class="footer-whatsapp" href="https://wa.me/584247130467" target="_blank" rel="noopener">WhatsApp</a>
   </footer>
 
   <div class="modal" id="adminModal" aria-hidden="true">
@@ -166,10 +178,10 @@
     </section>
   </div>
 
-  <a class="whatsapp-float" href="https://wa.me/56928733069" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <a class="whatsapp-float" href="https://wa.me/584247130467" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
     <img src="assets/whatsapp.svg" alt="WhatsApp" />
   </a>
 
-  <script src="app.js"></script>
+  <script src="app-v2.js"></script>
 </body>
 </html>
