@@ -385,10 +385,11 @@ h3 {
 }
 
 .number-btn.pending,
-.number-btn.partial {
+.number-btn.partial,
+.number-btn.second_pending,
+.number-btn.completion_pending {
   background: linear-gradient(145deg, var(--yellow), var(--yellow-dark));
   color: #0c0900;
-  cursor: not-allowed;
   opacity: 0.95;
 }
 
@@ -549,6 +550,47 @@ input[type="file"] {
   box-shadow: 0 14px 28px rgba(0,0,0,.32);
 }
 
+.footer-credit {
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.footer-main-logo {
+  width: min(180px, 55vw) !important;
+}
+
+.creator-block {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.created-by {
+  margin: 0;
+  color: var(--gold-light);
+  font-weight: 950;
+  letter-spacing: 0.16em;
+}
+
+.creator-logo {
+  width: min(520px, 88vw) !important;
+  max-height: 95px;
+  object-fit: contain;
+}
+
+.creator-caption {
+  margin: 0;
+  color: var(--white);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.creator-block .footer-whatsapp {
+  margin-top: 4px;
+}
+
 .modal {
   position: fixed;
   inset: 0;
@@ -636,7 +678,9 @@ input[type="file"] {
 }
 
 .status-pending,
-.status-partial {
+.status-partial,
+.status-second_pending,
+.status-completion_pending {
   background: rgba(255, 213, 74, 0.18);
   color: var(--yellow);
 }
