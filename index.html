@@ -131,21 +131,11 @@
         <div class="admin-head">
           <div><p class="eyebrow">Comprobantes</p><h2>Panel de control</h2></div>
           <div class="admin-actions">
-            <button class="btn btn-small" id="exportDataBtn" type="button">Exportar imagen</button>
+            <button class="btn btn-small" id="exportDataBtn" type="button">Exportar comprobantes ZIP</button>
             <button class="btn btn-small btn-ghost" id="logoutAdminBtn" type="button">Salir</button>
             <button class="btn btn-small btn-danger" id="resetDataBtn" type="button">Reiniciar rifa</button>
           </div>
         </div>
-
-        <div class="admin-summary" id="adminSummary"></div>
-
-        <section class="admin-numbers-section">
-          <div class="admin-section-title">
-            <h3>Todos los números</h3>
-            <p>Vista principal del 00 al 99 con estado actualizado.</p>
-          </div>
-          <div class="admin-numbers-grid" id="adminNumbersGrid"></div>
-        </section>
 
         <div class="admin-filter-tabs">
           <button class="filter-tab active" data-admin-filter="all" type="button">Todos</button>
@@ -168,5 +158,6 @@
       .catch(() => {});
   </script>
   <script src="app-v2.js"></script>
+  <script src="export-receipts-zip.js"></script>
 </body>
 </html>
