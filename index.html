@@ -42,21 +42,9 @@
 
   <main>
     <section class="section info-grid">
-      <article class="info-card">
-        <span class="icon">①</span>
-        <h3>Selecciona</h3>
-        <p>Escoge uno o varios números disponibles dentro del tablero.</p>
-      </article>
-      <article class="info-card">
-        <span class="icon">②</span>
-        <h3>Paga</h3>
-        <p>Realiza pago completo de $20 o pago parcial de $10 para apartar tu número.</p>
-      </article>
-      <article class="info-card">
-        <span class="icon">③</span>
-        <h3>Verifica</h3>
-        <p>Los pagos parciales quedan en amarillo. Al completar el pago, el número pasa a rojo.</p>
-      </article>
+      <article class="info-card"><span class="icon">①</span><h3>Selecciona</h3><p>Escoge uno o varios números disponibles dentro del tablero.</p></article>
+      <article class="info-card"><span class="icon">②</span><h3>Paga</h3><p>Realiza pago completo de $20 o pago parcial de $10 para apartar tu número.</p></article>
+      <article class="info-card"><span class="icon">③</span><h3>Verifica</h3><p>Los pagos parciales quedan en amarillo. Al completar el pago, el número pasa a rojo.</p></article>
     </section>
 
     <section class="section prize-section">
@@ -78,65 +66,36 @@
       <div class="section-title">
         <p class="eyebrow">Tablero oficial</p>
         <h2>Elige tus números</h2>
-        <p>Verde: disponible · Dorado: seleccionado · Amarillo: por aprobar o pago parcial · Rojo: pago completo aprobado</p>
+        <p>Verde: disponible · Dorado: seleccionado · Amarillo: por aprobar o pago parcial · Rojo: pago completo aprobado. Numeración del 00 al 99.</p>
       </div>
-
       <div class="toolbar">
         <button class="btn btn-small" id="selectRandomBtn" type="button">Elegir aleatorio</button>
         <button class="btn btn-small btn-ghost" id="clearSelectionBtn" type="button">Limpiar selección</button>
       </div>
-
       <div class="numbers-grid" id="numbersGrid" aria-label="Números de la rifa"></div>
     </section>
 
     <section class="section checkout-section">
       <div class="checkout-card">
         <div class="checkout-header">
-          <div>
-            <p class="eyebrow">Reserva</p>
-            <h2>Datos del participante</h2>
-          </div>
-          <div class="selected-box">
-            <small>Números</small>
-            <strong id="selectedNumbersLabel">Ninguno</strong>
-          </div>
+          <div><p class="eyebrow">Reserva</p><h2>Datos del participante</h2></div>
+          <div class="selected-box"><small>Números</small><strong id="selectedNumbersLabel">Ninguno</strong></div>
         </div>
-
         <form id="reservationForm" class="form">
           <div class="payment-options">
-            <label class="payment-option">
-              <input type="radio" name="paymentType" value="full" checked />
-              <span><strong>Pago completo</strong><small>$20 por número</small></span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="paymentType" value="partial" />
-              <span><strong>Pago parcial</strong><small>$10 por número para apartar</small></span>
-            </label>
-          </div>
-
-          <div class="form-row">
-            <label>Nombre completo
-              <input type="text" id="customerName" required placeholder="Ej: María Pérez" />
-            </label>
-            <label>Cédula / Documento
-              <input type="text" id="customerId" required placeholder="Ej: V-12345678" />
-            </label>
+            <label class="payment-option"><input type="radio" name="paymentType" value="full" checked /><span><strong>Pago completo</strong><small>$20 por número</small></span></label>
+            <label class="payment-option"><input type="radio" name="paymentType" value="partial" /><span><strong>Pago parcial</strong><small>$10 por número para apartar</small></span></label>
           </div>
           <div class="form-row">
-            <label>Teléfono / WhatsApp
-              <input type="tel" id="customerPhone" required placeholder="Ej: +58 000-0000000" />
-            </label>
-            <label>Referencia de pago
-              <input type="text" id="paymentRef" required placeholder="Últimos 6 dígitos o referencia" />
-            </label>
+            <label>Nombre completo<input type="text" id="customerName" required placeholder="Ej: María Pérez" /></label>
+            <label>Cédula / Documento<input type="text" id="customerId" required placeholder="Ej: V-12345678" /></label>
           </div>
-          <label>Comprobante de pago
-            <input type="file" id="receiptFile" accept="image/*,.pdf" required />
-          </label>
-          <div class="total-line">
-            <span>Total reportado</span>
-            <strong id="totalAmount">$0</strong>
+          <div class="form-row">
+            <label>Teléfono / WhatsApp<input type="tel" id="customerPhone" required placeholder="Ej: +58 000-0000000" /></label>
+            <label>Referencia de pago<input type="text" id="paymentRef" required placeholder="Últimos 6 dígitos o referencia" /></label>
           </div>
+          <label>Comprobante de pago<input type="file" id="receiptFile" accept="image/*,.pdf" required /></label>
+          <div class="total-line"><span>Total reportado</span><strong id="totalAmount">$0</strong></div>
           <button class="btn btn-primary btn-full" type="submit">Enviar comprobante para verificar</button>
           <p class="form-note">El pago parcial bloquea el número en amarillo. Cuando el administrador confirme el pago restante, el número pasará a rojo.</p>
         </form>
@@ -162,38 +121,48 @@
         <p class="eyebrow">Panel privado</p>
         <h2>Administración</h2>
         <p>Ingresa la clave para revisar comprobantes, aprobar pagos o liberar números.</p>
-        <input type="password" id="adminPassword" placeholder="Clave admin" />
+        <input type="password" id="adminPassword" placeholder="Clave admin" autocomplete="current-password" />
         <button class="btn btn-primary btn-full" id="loginAdminBtn" type="button">Entrar</button>
       </div>
 
       <div id="adminPanel" class="hidden">
         <div class="admin-head">
-          <div>
-            <p class="eyebrow">Comprobantes</p>
-            <h2>Verificación de pagos</h2>
-          </div>
+          <div><p class="eyebrow">Comprobantes</p><h2>Panel de control</h2></div>
           <div class="admin-actions">
-            <button class="btn btn-small" id="exportDataBtn" type="button">Exportar datos</button>
+            <button class="btn btn-small" id="exportDataBtn" type="button">Exportar imagen</button>
+            <button class="btn btn-small btn-ghost" id="logoutAdminBtn" type="button">Salir</button>
             <button class="btn btn-small btn-danger" id="resetDataBtn" type="button">Reiniciar rifa</button>
           </div>
         </div>
+
+        <div class="admin-summary" id="adminSummary"></div>
+
+        <section class="admin-numbers-section">
+          <div class="admin-section-title">
+            <h3>Todos los números</h3>
+            <p>Vista principal del 00 al 99 con estado actualizado.</p>
+          </div>
+          <div class="admin-numbers-grid" id="adminNumbersGrid"></div>
+        </section>
+
+        <div class="admin-filter-tabs">
+          <button class="filter-tab active" data-admin-filter="all" type="button">Todos</button>
+          <button class="filter-tab" data-admin-filter="rejected" type="button">Rechazados</button>
+          <button class="filter-tab" data-admin-filter="partial" type="button">Pagos parciales</button>
+          <button class="filter-tab" data-admin-filter="paid" type="button">Pagos completos</button>
+        </div>
+
         <div id="adminList" class="admin-list"></div>
       </div>
     </section>
   </div>
 
-  <a class="whatsapp-float" href="https://wa.me/584247130467" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
-    <img src="assets/whatsapp.svg" alt="WhatsApp" />
-  </a>
+  <a class="whatsapp-float" href="https://wa.me/584247130467" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp" /></a>
 
   <script>
     fetch('assets/logo-original.webp.b64')
       .then(response => response.text())
-      .then(base64 => {
-        document.querySelectorAll('[data-original-logo]').forEach(img => {
-          img.src = 'data:image/webp;base64,' + base64.trim();
-        });
-      })
+      .then(base64 => { document.querySelectorAll('[data-original-logo]').forEach(img => { img.src = 'data:image/webp;base64,' + base64.trim(); }); })
       .catch(() => {});
   </script>
   <script src="app-v2.js"></script>
