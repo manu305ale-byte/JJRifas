@@ -5,8 +5,7 @@
 
   function fallbackRate() {
     const configRate = Number(window.JJRIFAS_RATE_CONFIG?.fallbackRateVES);
-    if (Number.isFinite(configRate) && configRate > 0) return configRate;
-    return 250;
+    return Number.isFinite(configRate) && configRate > 0 ? configRate : null;
   }
 
   function formatBs(value) {
@@ -39,7 +38,7 @@
       const span = document.createElement('span');
       span.dataset.bsEquivalent = '20';
       span.className = 'bs-equivalent bs-equivalent-main';
-      span.textContent = 'Calculando Bs...';
+      span.textContent = 'Consultando tasa...';
       ticketPrice.appendChild(span);
     }
 
@@ -50,7 +49,7 @@
       const span = document.createElement('span');
       span.dataset.bsEquivalent = String(amount);
       span.className = 'bs-equivalent';
-      span.textContent = ' · Calculando Bs...';
+      span.textContent = ' · Consultando tasa...';
       element.appendChild(span);
     });
   }
@@ -59,9 +58,9 @@
     document.querySelectorAll('[data-bs-equivalent]').forEach(element => {
       const usd = Number(element.dataset.bsEquivalent || 0);
       if (!rate || !usd) {
-        const fallback = fallbackRate();
-        const text = `≈ ${formatBs(usd * fallback)} ref.`;
-        element.textContent = element.classList.contains('bs-equivalent-main') ? text : ` · ${text}`;
+        element.textContent = element.classList.contains('bs-equivalent-main')
+          ? 'Tasa API no disponible'
+          : ' · Tasa API no disponible';
         return;
       }
       const text = `≈ ${formatBs(usd * rate)}${isFallback ? ' ref.' : ''}`;
@@ -74,7 +73,6 @@
 
     const cachedRate = getCachedRate();
     if (cachedRate) updateEquivalentElements(cachedRate);
-    else updateEquivalentElements(fallbackRate(), true);
 
     try {
       const response = await fetch(API_URL, { cache: 'no-store' });
@@ -85,8 +83,8 @@
       setCachedRate(rate);
       updateEquivalentElements(rate);
     } catch (error) {
-      console.warn('No se pudo cargar la tasa USDT/VES. Se usará tasa manual:', error);
-      if (!cachedRate) updateEquivalentElements(fallbackRate(), true);
+      console.warn('No se pudo cargar la tasa USDT/VES desde la API:', error);
+      if (!cachedRate) updateEquivalentElements(fallbackRate(), Boolean(fallbackRate()));
     }
   }
 
