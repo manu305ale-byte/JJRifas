@@ -3,6 +3,12 @@
   const REFRESH_MINUTES = 10;
   const CACHE_KEY = 'jjrifas_binance_p2p_ves_rate_cache';
 
+  function fallbackRate() {
+    const configRate = Number(window.JJRIFAS_RATE_CONFIG?.fallbackRateVES);
+    if (Number.isFinite(configRate) && configRate > 0) return configRate;
+    return 250;
+  }
+
   function formatBs(value) {
     return new Intl.NumberFormat('es-VE', {
       style: 'currency',
@@ -49,14 +55,16 @@
     });
   }
 
-  function updateEquivalentElements(rate) {
+  function updateEquivalentElements(rate, isFallback = false) {
     document.querySelectorAll('[data-bs-equivalent]').forEach(element => {
       const usd = Number(element.dataset.bsEquivalent || 0);
       if (!rate || !usd) {
-        element.textContent = element.classList.contains('bs-equivalent-main') ? 'Bs no disponible' : ' · Bs no disponible';
+        const fallback = fallbackRate();
+        const text = `≈ ${formatBs(usd * fallback)} ref.`;
+        element.textContent = element.classList.contains('bs-equivalent-main') ? text : ` · ${text}`;
         return;
       }
-      const text = `≈ ${formatBs(usd * rate)}`;
+      const text = `≈ ${formatBs(usd * rate)}${isFallback ? ' ref.' : ''}`;
       element.textContent = element.classList.contains('bs-equivalent-main') ? text : ` · ${text}`;
     });
   }
@@ -66,6 +74,7 @@
 
     const cachedRate = getCachedRate();
     if (cachedRate) updateEquivalentElements(cachedRate);
+    else updateEquivalentElements(fallbackRate(), true);
 
     try {
       const response = await fetch(API_URL, { cache: 'no-store' });
@@ -76,8 +85,8 @@
       setCachedRate(rate);
       updateEquivalentElements(rate);
     } catch (error) {
-      console.warn('No se pudo cargar la tasa USDT/VES:', error);
-      if (!cachedRate) updateEquivalentElements(null);
+      console.warn('No se pudo cargar la tasa USDT/VES. Se usará tasa manual:', error);
+      if (!cachedRate) updateEquivalentElements(fallbackRate(), true);
     }
   }
 
