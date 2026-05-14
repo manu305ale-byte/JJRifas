@@ -1,90 +1,114 @@
 (() => {
   const API_URL = '/.netlify/functions/binance-rate';
   const REFRESH_MINUTES = 10;
-  const CACHE_KEY = 'jjrifas_binance_p2p_ves_rate_cache';
+  const CACHE_KEY = 'jjrifas_binance_p2p_multi_rate_cache';
+
+  const CURRENCIES = {
+    VES: { label: 'Bs', locale: 'es-VE', decimals: 2 },
+    COP: { label: 'COP', locale: 'es-CO', decimals: 0 },
+    CLP: { label: 'CLP', locale: 'es-CL', decimals: 0 }
+  };
 
   function fallbackRate() {
     const configRate = Number(window.JJRIFAS_RATE_CONFIG?.fallbackRateVES);
     return Number.isFinite(configRate) && configRate > 0 ? configRate : null;
   }
 
-  function formatBs(value) {
-    return new Intl.NumberFormat('es-VE', {
-      style: 'currency',
-      currency: 'VES',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value).replace('VES', 'Bs');
+  function formatMoney(value, currency) {
+    const config = CURRENCIES[currency] || CURRENCIES.VES;
+    const formatted = new Intl.NumberFormat(config.locale, {
+      minimumFractionDigits: config.decimals,
+      maximumFractionDigits: config.decimals
+    }).format(value);
+    return `${config.label} ${formatted}`;
   }
 
-  function getCachedRate() {
+  function getCachedRates() {
     try {
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if (!cached) return null;
       if (Date.now() - cached.savedAt > REFRESH_MINUTES * 60 * 1000) return null;
-      return cached.rate;
+      return cached.rates;
     } catch {
       return null;
     }
   }
 
-  function setCachedRate(rate) {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ rate, savedAt: Date.now() }));
+  function setCachedRates(rates) {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ rates, savedAt: Date.now() }));
   }
 
   function ensureEquivalentElements() {
     const ticketPrice = document.getElementById('ticketPrice');
-    if (ticketPrice && !ticketPrice.querySelector('[data-bs-equivalent]')) {
-      const span = document.createElement('span');
-      span.dataset.bsEquivalent = '20';
-      span.className = 'bs-equivalent bs-equivalent-main';
-      span.textContent = 'Consultando tasa...';
-      ticketPrice.appendChild(span);
+    if (ticketPrice && !ticketPrice.querySelector('[data-usd-equivalent]')) {
+      const box = document.createElement('span');
+      box.dataset.usdEquivalent = '20';
+      box.className = 'currency-equivalents currency-equivalents-main';
+      box.textContent = 'Consultando tasas...';
+      ticketPrice.appendChild(box);
     }
 
     document.querySelectorAll('.payment-option small, .payment-box p').forEach(element => {
       const text = element.textContent || '';
       const amount = text.includes('$10') ? 10 : text.includes('$20') ? 20 : null;
-      if (!amount || element.querySelector('[data-bs-equivalent]')) return;
-      const span = document.createElement('span');
-      span.dataset.bsEquivalent = String(amount);
-      span.className = 'bs-equivalent';
-      span.textContent = ' · Consultando tasa...';
-      element.appendChild(span);
+      if (!amount || element.querySelector('[data-usd-equivalent]')) return;
+      const box = document.createElement('span');
+      box.dataset.usdEquivalent = String(amount);
+      box.className = 'currency-equivalents';
+      box.textContent = ' · Consultando tasas...';
+      element.appendChild(box);
     });
   }
 
-  function updateEquivalentElements(rate, isFallback = false) {
-    document.querySelectorAll('[data-bs-equivalent]').forEach(element => {
-      const usd = Number(element.dataset.bsEquivalent || 0);
-      if (!rate || !usd) {
-        element.textContent = element.classList.contains('bs-equivalent-main')
-          ? 'Tasa API no disponible'
-          : ' · Tasa API no disponible';
+  function buildLines(usd, rates) {
+    if (!rates) return [];
+    return ['VES', 'COP', 'CLP']
+      .filter(currency => Number.isFinite(Number(rates[currency])) && Number(rates[currency]) > 0)
+      .map(currency => `≈ ${formatMoney(usd * Number(rates[currency]), currency)}`);
+  }
+
+  function updateEquivalentElements(rates, isFallback = false) {
+    document.querySelectorAll('[data-usd-equivalent]').forEach(element => {
+      const usd = Number(element.dataset.usdEquivalent || 0);
+      let finalRates = rates;
+
+      if (!finalRates && fallbackRate()) {
+        finalRates = { VES: fallbackRate() };
+        isFallback = true;
+      }
+
+      const lines = buildLines(usd, finalRates);
+      if (!usd || !lines.length) {
+        element.innerHTML = element.classList.contains('currency-equivalents-main')
+          ? '<span>Tasa API no disponible</span>'
+          : '<span> · Tasa API no disponible</span>';
         return;
       }
-      const text = `≈ ${formatBs(usd * rate)}${isFallback ? ' ref.' : ''}`;
-      element.textContent = element.classList.contains('bs-equivalent-main') ? text : ` · ${text}`;
+
+      element.innerHTML = lines.map((line, index) => {
+        const suffix = isFallback && index === 0 ? ' ref.' : '';
+        return `<span>${line}${suffix}</span>`;
+      }).join('');
     });
   }
 
   async function loadRate() {
     ensureEquivalentElements();
 
-    const cachedRate = getCachedRate();
-    if (cachedRate) updateEquivalentElements(cachedRate);
+    const cachedRates = getCachedRates();
+    if (cachedRates) updateEquivalentElements(cachedRates);
 
     try {
       const response = await fetch(API_URL, { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      const rate = Number(data?.rate);
-      if (!data?.ok || !Number.isFinite(rate) || rate <= 0) throw new Error(data?.error || 'Tasa no disponible.');
-      setCachedRate(rate);
-      updateEquivalentElements(rate);
+      const rates = data?.rates || (data?.rate ? { VES: data.rate } : null);
+      if (!data?.ok || !rates || !Number.isFinite(Number(rates.VES))) throw new Error(data?.error || 'Tasas no disponibles.');
+      setCachedRates(rates);
+      updateEquivalentElements(rates);
     } catch (error) {
-      console.warn('No se pudo cargar la tasa USDT/VES desde la API:', error);
-      if (!cachedRate) updateEquivalentElements(fallbackRate(), Boolean(fallbackRate()));
+      console.warn('No se pudieron cargar las tasas USDT desde la API:', error);
+      if (!cachedRates) updateEquivalentElements(null);
     }
   }
 
