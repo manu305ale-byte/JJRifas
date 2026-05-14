@@ -1,7 +1,18 @@
 (() => {
-  const API_URL = 'https://cotizave.com/api-p2p-venezuela';
+  const API_URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
   const REFRESH_MINUTES = 10;
-  const CACHE_KEY = 'jjrifas_cotizave_rate_cache';
+  const CACHE_KEY = 'jjrifas_binance_p2p_ves_rate_cache';
+
+  const REQUEST_BODY = {
+    asset: 'USDT',
+    fiat: 'VES',
+    merchantCheck: false,
+    page: 1,
+    payTypes: [],
+    publisherType: null,
+    rows: 1,
+    tradeType: 'BUY'
+  };
 
   function formatBs(value) {
     return new Intl.NumberFormat('es-VE', {
@@ -12,41 +23,10 @@
     }).format(value).replace('VES', 'Bs');
   }
 
-  function looksLikeRate(value) {
-    const n = Number(value);
-    return Number.isFinite(n) && n > 20 && n < 10000;
-  }
-
   function extractRate(data) {
-    const priorityKeys = [
-      'promedio', 'average', 'avg', 'precio', 'price', 'rate', 'tasa',
-      'cotizacion', 'cotización', 'venta', 'sell', 'p2p', 'usdt', 'usd', 'bs', 'ves'
-    ];
-
-    const candidates = [];
-
-    function walk(value, path = '') {
-      if (looksLikeRate(value)) {
-        const lowerPath = path.toLowerCase();
-        const score = priorityKeys.reduce((sum, key) => sum + (lowerPath.includes(key) ? 10 : 0), 0);
-        candidates.push({ value: Number(value), score, path });
-        return;
-      }
-
-      if (Array.isArray(value)) {
-        value.forEach((item, index) => walk(item, `${path}.${index}`));
-        return;
-      }
-
-      if (value && typeof value === 'object') {
-        Object.entries(value).forEach(([key, item]) => walk(item, path ? `${path}.${key}` : key));
-      }
-    }
-
-    walk(data);
-    if (!candidates.length) return null;
-    candidates.sort((a, b) => b.score - a.score || b.value - a.value);
-    return candidates[0].value;
+    const price = data?.data?.[0]?.adv?.price;
+    const rate = Number(String(price || '').replace(',', '.'));
+    return Number.isFinite(rate) && rate > 0 ? rate : null;
   }
 
   function getCachedRate() {
@@ -105,15 +85,24 @@
     if (cachedRate) updateEquivalentElements(cachedRate);
 
     try {
-      const response = await fetch(API_URL, { cache: 'no-store' });
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(REQUEST_BODY),
+        cache: 'no-store'
+      });
+
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       const rate = extractRate(data);
-      if (!rate) throw new Error('No se pudo detectar la tasa en la respuesta de Cotizave.');
+      if (!rate) throw new Error('No se pudo detectar la tasa USDT/VES en Binance P2P.');
+
       setCachedRate(rate);
       updateEquivalentElements(rate);
     } catch (error) {
-      console.warn('No se pudo cargar la tasa de Cotizave:', error);
+      console.warn('No se pudo cargar la tasa Binance P2P:', error);
       if (!cachedRate) updateEquivalentElements(null);
     }
   }
