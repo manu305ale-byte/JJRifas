@@ -163,6 +163,7 @@
       .then(base64 => { document.querySelectorAll('[data-original-logo]').forEach(img => { img.src = 'data:image/webp;base64,' + base64.trim(); }); })
       .catch(() => {});
   </script>
+  <script src="manual-rate.js"></script>
   <script src="app-v2.js"></script>
   <script src="export-receipts-zip.js"></script>
   <script src="second-payment-mode-fix.js"></script>
