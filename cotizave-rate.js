@@ -1,18 +1,7 @@
 (() => {
-  const API_URL = 'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search';
+  const API_URL = '/.netlify/functions/binance-rate';
   const REFRESH_MINUTES = 10;
   const CACHE_KEY = 'jjrifas_binance_p2p_ves_rate_cache';
-
-  const REQUEST_BODY = {
-    asset: 'USDT',
-    fiat: 'VES',
-    merchantCheck: false,
-    page: 1,
-    payTypes: [],
-    publisherType: null,
-    rows: 1,
-    tradeType: 'BUY'
-  };
 
   function formatBs(value) {
     return new Intl.NumberFormat('es-VE', {
@@ -21,12 +10,6 @@
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(value).replace('VES', 'Bs');
-  }
-
-  function extractRate(data) {
-    const price = data?.data?.[0]?.adv?.price;
-    const rate = Number(String(price || '').replace(',', '.'));
-    return Number.isFinite(rate) && rate > 0 ? rate : null;
   }
 
   function getCachedRate() {
@@ -85,24 +68,15 @@
     if (cachedRate) updateEquivalentElements(cachedRate);
 
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(REQUEST_BODY),
-        cache: 'no-store'
-      });
-
+      const response = await fetch(API_URL, { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      const rate = extractRate(data);
-      if (!rate) throw new Error('No se pudo detectar la tasa USDT/VES en Binance P2P.');
-
+      const rate = Number(data?.rate);
+      if (!data?.ok || !Number.isFinite(rate) || rate <= 0) throw new Error(data?.error || 'Tasa no disponible.');
       setCachedRate(rate);
       updateEquivalentElements(rate);
     } catch (error) {
-      console.warn('No se pudo cargar la tasa Binance P2P:', error);
+      console.warn('No se pudo cargar la tasa USDT/VES:', error);
       if (!cachedRate) updateEquivalentElements(null);
     }
   }
