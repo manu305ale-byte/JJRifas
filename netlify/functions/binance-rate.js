@@ -8,7 +8,7 @@ exports.handler = async function () {
     page: 1,
     payTypes: [],
     publisherType: null,
-    rows: 1,
+    rows: 20,
     tradeType: 'BUY'
   };
 
@@ -34,10 +34,11 @@ exports.handler = async function () {
     }
 
     const data = await response.json();
-    const price = data?.data?.[0]?.adv?.price;
-    const rate = Number(String(price || '').replace(',', '.'));
+    const prices = (data?.data || [])
+      .map(item => Number(String(item?.adv?.price || '').replace(',', '.')))
+      .filter(price => Number.isFinite(price) && price > 0);
 
-    if (!Number.isFinite(rate) || rate <= 0) {
+    if (!prices.length) {
       return {
         statusCode: 502,
         headers: {
@@ -48,6 +49,8 @@ exports.handler = async function () {
       };
     }
 
+    const rate = Math.max(...prices);
+
     return {
       statusCode: 200,
       headers: {
@@ -55,7 +58,14 @@ exports.handler = async function () {
         'Cache-Control': 'public, max-age=300',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ok: true, rate, source: 'binance-p2p-usdt-ves', updatedAt: new Date().toISOString() })
+      body: JSON.stringify({
+        ok: true,
+        rate,
+        source: 'binance-p2p-usdt-ves-highest-buy-page-1',
+        mode: 'highest-rate',
+        sampledAds: prices.length,
+        updatedAt: new Date().toISOString()
+      })
     };
   } catch (error) {
     return {
