@@ -1,8 +1,7 @@
-// TASA MANUAL DE RESPALDO
-// Cambia este valor cuando quieras actualizar la conversión a bolívares.
-// La página primero intentará consultar la función de Netlify.
-// Si falla, usará esta tasa para evitar mostrar "Bs no disponible".
+// TASA MANUAL DESACTIVADA
+// Este archivo queda solo como respaldo técnico.
+// La web ya no mostrará una tasa manual falsa si la API no responde.
 window.JJRIFAS_RATE_CONFIG = {
-  fallbackRateVES: 250,
-  fallbackLabel: 'tasa referencial'
+  fallbackRateVES: null,
+  fallbackLabel: 'api requerida'
 };
