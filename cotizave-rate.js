@@ -1,5 +1,5 @@
 (() => {
-  const API_URL = '/.netlify/functions/binance-rate';
+  const API_URLS = ['/api/binance-rate', '/.netlify/functions/binance-rate'];
   const REFRESH_MINUTES = 10;
   const CACHE_KEY = 'jjrifas_binance_p2p_multi_rate_cache';
 
@@ -92,6 +92,25 @@
     });
   }
 
+  async function requestRates() {
+    let lastError;
+    for (const url of API_URLS) {
+      try {
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
+        const data = await response.json();
+        const rates = data?.rates || (data?.rate ? { VES: data.rate } : null);
+        if (!data?.ok || !rates || !Number.isFinite(Number(rates.VES))) {
+          throw new Error(data?.error || `Tasas no disponibles en ${url}`);
+        }
+        return rates;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error('Tasas no disponibles.');
+  }
+
   async function loadRate() {
     ensureEquivalentElements();
 
@@ -99,11 +118,7 @@
     if (cachedRates) updateEquivalentElements(cachedRates);
 
     try {
-      const response = await fetch(API_URL, { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      const rates = data?.rates || (data?.rate ? { VES: data.rate } : null);
-      if (!data?.ok || !rates || !Number.isFinite(Number(rates.VES))) throw new Error(data?.error || 'Tasas no disponibles.');
+      const rates = await requestRates();
       setCachedRates(rates);
       updateEquivalentElements(rates);
     } catch (error) {
