@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="Manuel Piñango Diseñador Gráfico"><rect width="1200" height="300" fill="#000"/><text x="60" y="145" fill="#fff" font-family="Brush Script MT, Segoe Script, cursive" font-size="140">Manuel Piñango</text><text x="170" y="240" fill="#fff" font-family="Brush Script MT, Segoe Script, cursive" font-size="70">Diseñador Gráfico</text></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 816 293.33" role="img" aria-label="Manuel Piñango Diseñador Gráfico">
+  <defs>
+    <style>
+      .signature{fill:#fff;font-family:'Brush Script MT','Segoe Script',cursive;font-weight:400;}
+    </style>
+  </defs>
+  <rect width="816" height="293.33" fill="transparent"/>
+  <text class="signature" x="28" y="130" font-size="96">Manuel Piñango</text>
+  <text class="signature" x="116" y="212" font-size="48">Diseñador Gráfico</text>
+</svg>
