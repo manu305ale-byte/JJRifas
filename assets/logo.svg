@@ -1,25 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-label="JJRifas">
-  <rect width="1200" height="600" fill="#000"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1080">
   <defs>
-    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#f6dc72"/>
-      <stop offset="0.45" stop-color="#c9a238"/>
-      <stop offset="1" stop-color="#8f6500"/>
+    <style>
+      .cls-1{fill:#050505;}
+      .cls-2{fill:url(#Degradado_sin_nombre_104);}
+      .cls-3{fill:url(#Degradado_sin_nombre_33);}
+      .cls-4{fill:url(#Degradado_sin_nombre_33-2);}
+      .cls-5{fill:url(#Degradado_sin_nombre_33-3);}
+      .cls-6{fill:url(#Degradado_sin_nombre_33-4);}
+    </style>
+    <linearGradient id="Degradado_sin_nombre_104" x1="540" y1="890" x2="540" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9a6a00"/>
+      <stop offset=".22" stop-color="#d9bb50"/>
+      <stop offset=".52" stop-color="#f2d96b"/>
+      <stop offset=".78" stop-color="#c89b25"/>
+      <stop offset="1" stop-color="#8b6200"/>
     </linearGradient>
-    <linearGradient id="green" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#9bd18e"/>
-      <stop offset="0.55" stop-color="#0c7c31"/>
-      <stop offset="1" stop-color="#00471f"/>
+    <linearGradient id="Degradado_sin_nombre_33" x1="540" y1="340" x2="540" y2="710" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#92c987"/>
+      <stop offset=".48" stop-color="#10772f"/>
+      <stop offset="1" stop-color="#00561f"/>
     </linearGradient>
+    <linearGradient id="Degradado_sin_nombre_33-2" x1="470" y1="420" x2="470" y2="670" xlink:href="#Degradado_sin_nombre_33"/>
+    <linearGradient id="Degradado_sin_nombre_33-3" x1="610" y1="420" x2="610" y2="670" xlink:href="#Degradado_sin_nombre_33"/>
+    <linearGradient id="Degradado_sin_nombre_33-4" x1="540" y1="500" x2="540" y2="760" xlink:href="#Degradado_sin_nombre_33"/>
   </defs>
-  <text x="600" y="150" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="176" font-weight="900" fill="url(#gold)" letter-spacing="-10">RIFAS</text>
-  <text x="285" y="430" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="300" font-weight="900" fill="url(#gold)" letter-spacing="-26">J</text>
-  <text x="910" y="430" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="300" font-weight="900" fill="url(#gold)" letter-spacing="-26">J</text>
-  <g transform="translate(600 338)">
-    <circle cx="0" cy="-52" r="48" fill="url(#green)"/>
-    <circle cx="-70" cy="38" r="56" fill="url(#green)"/>
-    <circle cx="70" cy="38" r="56" fill="url(#green)"/>
-    <path d="M-12 25 C-20 92 -58 130 -92 150 H92 C55 130 17 92 12 25 Z" fill="url(#green)"/>
+  <rect class="cls-1" width="1080" height="1080" rx="110"/>
+  <g>
+    <text x="540" y="260" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="190" font-weight="900" letter-spacing="-8" fill="url(#Degradado_sin_nombre_104)">RIFAS</text>
+    <text x="320" y="650" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="430" font-weight="900" fill="url(#Degradado_sin_nombre_104)">J</text>
+    <text x="760" y="650" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="430" font-weight="900" fill="url(#Degradado_sin_nombre_104)">J</text>
+    <circle class="cls-3" cx="540" cy="440" r="58"/>
+    <circle class="cls-4" cx="455" cy="540" r="74"/>
+    <circle class="cls-5" cx="625" cy="540" r="74"/>
+    <path class="cls-6" d="M523 505c-9 92-63 141-115 178h264c-55-38-108-87-115-178z"/>
+    <text x="540" y="860" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" font-weight="900" letter-spacing="5" fill="url(#Degradado_sin_nombre_104)">¡LA SUERTE TE ESPERA!</text>
   </g>
-  <text x="600" y="545" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" font-weight="900" fill="url(#gold)" letter-spacing="5">¡LA SUERTE TE ESPERA!</text>
 </svg>
