@@ -75,9 +75,9 @@ window.JJRIFAS_RATE_CONFIG = {
 window.addEventListener('load', () => {
   document.querySelectorAll('img[alt="JJRifas"]').forEach(img => {
     img.removeAttribute('data-original-logo');
-    img.src = 'assets/rifas-jj.svg';
+    img.src = 'assets/logo.svg';
   });
   document.querySelectorAll('img[alt*="Manuel"], img.creator-logo').forEach(img => {
-    img.src = 'assets/manuel-pinango.svg';
+    img.src = 'assets/firma-manuel.svg';
   });
 });
