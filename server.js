@@ -28,6 +28,21 @@ app.use(express.static(__dirname, {
   }
 }));
 
+function publicReservation(r) {
+  return {
+    id: r.id,
+    status: r.status,
+    paymentType: r.paymentType,
+    numbers: Array.isArray(r.numbers) ? r.numbers : [],
+    ticketTotal: r.ticketTotal,
+    amount: r.amount,
+    amountPaid: r.amountPaid || 0,
+    createdAt: r.createdAt,
+    completedAt: r.completedAt || null,
+    secondReportedAt: r.secondReportedAt || null
+  };
+}
+
 async function initDatabase() {
   if (!pool || dbReady) return;
   await pool.query(`
@@ -143,7 +158,7 @@ app.get('/api/reservations', async (_req, res) => {
   try {
     const reservations = await readReservations();
     res.set('Cache-Control', 'no-store');
-    res.json({ ok: true, reservations, storage: pool ? 'postgres' : 'file' });
+    res.json({ ok: true, reservations: reservations.map(publicReservation), storage: pool ? 'postgres' : 'file' });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Error leyendo reservas.' });
   }
@@ -156,7 +171,7 @@ app.put('/api/reservations', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Formato inválido. Se esperaba un arreglo de reservas.' });
     }
     await writeReservations(reservations);
-    res.json({ ok: true, reservations, storage: pool ? 'postgres' : 'file' });
+    res.json({ ok: true, reservations: reservations.map(publicReservation), storage: pool ? 'postgres' : 'file' });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Error guardando reservas.' });
   }
