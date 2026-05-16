@@ -106,35 +106,12 @@ async function writeReservations(reservations) {
 }
 
 async function getHighestRate(fiat) {
-  const body = {
-    asset: 'USDT',
-    fiat,
-    merchantCheck: false,
-    page: 1,
-    payTypes: [],
-    publisherType: null,
-    rows: 20,
-    tradeType: 'BUY'
-  };
-
-  const response = await fetch(BINANCE_API, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': 'Mozilla/5.0 JJRifas Railway Server'
-    },
-    body: JSON.stringify(body)
-  });
-
+  const body = { asset: 'USDT', fiat, merchantCheck: false, page: 1, payTypes: [], publisherType: null, rows: 20, tradeType: 'BUY' };
+  const response = await fetch(BINANCE_API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 JJRifas Railway Server' }, body: JSON.stringify(body) });
   if (!response.ok) throw new Error(`Binance ${fiat} HTTP ${response.status}`);
-
   const data = await response.json();
-  const prices = (data?.data || [])
-    .map(item => Number(String(item?.adv?.price || '').replace(',', '.')))
-    .filter(price => Number.isFinite(price) && price > 0);
-
+  const prices = (data?.data || []).map(item => Number(String(item?.adv?.price || '').replace(',', '.'))).filter(price => Number.isFinite(price) && price > 0);
   if (!prices.length) throw new Error(`No se pudo detectar la tasa USDT/${fiat}.`);
-
   return { fiat, rate: Math.max(...prices), sampledAds: prices.length };
 }
 
@@ -143,18 +120,8 @@ app.get('/api/binance-rate', async (_req, res) => {
     const results = await Promise.all(FIATS.map(getHighestRate));
     const rates = Object.fromEntries(results.map(item => [item.fiat, item.rate]));
     const sampledAds = Object.fromEntries(results.map(item => [item.fiat, item.sampledAds]));
-
     res.set('Cache-Control', 'public, max-age=300');
-    res.json({
-      ok: true,
-      rate: rates.VES,
-      rates,
-      source: 'binance-p2p-usdt-multi-fiat-highest-buy-page-1',
-      mode: 'highest-rate',
-      sampledAds,
-      platform: pool ? 'railway-postgres' : 'railway-file',
-      updatedAt: new Date().toISOString()
-    });
+    res.json({ ok: true, rate: rates.VES, rates, source: 'binance-p2p-usdt-multi-fiat-highest-buy-page-1', mode: 'highest-rate', sampledAds, platform: pool ? 'railway-postgres' : 'railway-file', updatedAt: new Date().toISOString() });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'Error consultando Binance P2P.' });
   }
@@ -170,12 +137,20 @@ app.get('/api/reservations', async (_req, res) => {
   }
 });
 
+app.get('/api/admin/reservations', async (_req, res) => {
+  try {
+    const reservations = await readReservations();
+    res.set('Cache-Control', 'no-store');
+    res.json({ ok: true, reservations, storage: pool ? 'postgres' : 'file' });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'Error leyendo comprobantes.' });
+  }
+});
+
 app.put('/api/reservations', async (req, res) => {
   try {
     const incoming = Array.isArray(req.body) ? req.body : req.body?.reservations;
-    if (!Array.isArray(incoming)) {
-      return res.status(400).json({ ok: false, error: 'Formato inválido. Se esperaba un arreglo de reservas.' });
-    }
+    if (!Array.isArray(incoming)) return res.status(400).json({ ok: false, error: 'Formato inválido. Se esperaba un arreglo de reservas.' });
     const existing = await readReservations();
     const reservations = mergeReservations(existing, incoming);
     await writeReservations(reservations);
