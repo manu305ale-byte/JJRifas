@@ -19,7 +19,7 @@
   <header class="hero">
     <div class="hero-glow"></div>
     <nav class="nav">
-      <img src="assets/logo.svg" data-original-logo alt="JJRifas" class="nav-logo" />
+      <img src="assets/logo.svg" alt="JJRifas" class="nav-logo" />
       <div class="nav-actions">
         <a href="#numeros" class="btn btn-ghost">Ver números</a>
         <button class="btn btn-admin" id="openAdminBtn" type="button">Admin</button>
@@ -39,7 +39,7 @@
         <a class="btn btn-primary" href="#numeros">Participar ahora</a>
       </div>
       <div class="hero-card">
-        <img src="assets/logo.svg" data-original-logo alt="JJRifas" />
+        <img src="assets/logo.svg" alt="JJRifas" />
         <div class="price-card">
           <span>Valor del número</span>
           <strong id="ticketPrice">$20</strong>
@@ -112,7 +112,7 @@
   </main>
 
   <footer class="footer footer-credit">
-    <img class="footer-main-logo" src="assets/logo.svg" data-original-logo alt="JJRifas" />
+    <img class="footer-main-logo" src="assets/logo.svg" alt="JJRifas" />
     <div class="creator-block">
       <p class="created-by">CREADO POR:</p>
       <img class="creator-logo" src="assets/firma-manuel.svg" alt="Firma Manuel Piñango" />
@@ -157,14 +157,9 @@
 
   <a class="whatsapp-float" href="https://wa.me/584247130467" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp" /></a>
 
-  <script>
-    fetch('assets/logo-original.webp.b64')
-      .then(response => response.text())
-      .then(base64 => { document.querySelectorAll('[data-original-logo]').forEach(img => { img.src = 'data:image/webp;base64,' + base64.trim(); }); })
-      .catch(() => {});
-  </script>
   <script src="manual-rate.js"></script>
   <script src="app-v2.js"></script>
+  <script src="backend-safe-sync.js"></script>
   <script src="export-receipts-zip.js"></script>
   <script src="second-payment-mode-fix.js"></script>
   <script src="second-payment-upload-fix.js"></script>
