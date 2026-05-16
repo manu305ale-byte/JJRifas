@@ -17,12 +17,13 @@
 
 window.addEventListener('load',function(){
   var KEY='jjrifas_v6_final_00_99';
-  function adminOpen(){var m=document.getElementById('adminModal'),p=document.getElementById('adminPanel');return !!(m&&p&&m.classList.contains('is-open')&&!p.classList.contains('hidden'))}
+  function adminOpen(){var m=document.getElementById('adminModal'),p=document.getElementById('adminPanel');var visible=!!(m&&p&&m.classList.contains('is-open')&&!p.classList.contains('hidden'));var session=false;try{session=typeof isAdminActive==='function'&&isAdminActive()}catch(e){}return visible||session}
   function apply(list){if(!Array.isArray(list))return;try{reservations=list}catch(e){}localStorage.setItem(KEY,JSON.stringify(list));if(typeof render==='function')render();if(typeof renderAdmin==='function')renderAdmin()}
   async function loadAdmin(){if(!adminOpen())return;try{var r=await fetch('/api/admin/reservations',{cache:'no-store'});var d=await r.json();if(d&&d.ok&&Array.isArray(d.reservations))apply(d.reservations)}catch(e){console.warn('admin receipts sync',e)}}
-  document.getElementById('loginAdminBtn')?.addEventListener('click',function(){setTimeout(loadAdmin,700)});
-  document.getElementById('openAdminBtn')?.addEventListener('click',function(){setTimeout(loadAdmin,700)});
-  document.querySelectorAll('[data-admin-filter]').forEach(function(b){b.addEventListener('click',function(){setTimeout(loadAdmin,250)})});
+  document.getElementById('loginAdminBtn')?.addEventListener('click',function(){setTimeout(loadAdmin,700);setTimeout(loadAdmin,1600)});
+  document.getElementById('openAdminBtn')?.addEventListener('click',function(){setTimeout(loadAdmin,700);setTimeout(loadAdmin,1600)});
+  document.querySelectorAll('[data-admin-filter]').forEach(function(b){b.addEventListener('click',function(){setTimeout(loadAdmin,250);setTimeout(loadAdmin,900)})});
+  document.getElementById('adminPanel')?.addEventListener('click',function(){setTimeout(loadAdmin,1200)});
   setInterval(function(){if(adminOpen())loadAdmin()},5000);
   window.refreshAdminReceipts=loadAdmin;
 });
