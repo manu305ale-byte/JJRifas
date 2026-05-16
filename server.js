@@ -43,6 +43,12 @@ function publicReservation(r) {
   };
 }
 
+function mergeReservations(existing, incoming) {
+  if (!incoming.length) return [];
+  const byId = new Map(existing.map(item => [item.id, item]));
+  return incoming.map(item => ({ ...(byId.get(item.id) || {}), ...item }));
+}
+
 async function initDatabase() {
   if (!pool || dbReady) return;
   await pool.query(`
@@ -166,10 +172,12 @@ app.get('/api/reservations', async (_req, res) => {
 
 app.put('/api/reservations', async (req, res) => {
   try {
-    const reservations = Array.isArray(req.body) ? req.body : req.body?.reservations;
-    if (!Array.isArray(reservations)) {
+    const incoming = Array.isArray(req.body) ? req.body : req.body?.reservations;
+    if (!Array.isArray(incoming)) {
       return res.status(400).json({ ok: false, error: 'Formato inválido. Se esperaba un arreglo de reservas.' });
     }
+    const existing = await readReservations();
+    const reservations = mergeReservations(existing, incoming);
     await writeReservations(reservations);
     res.json({ ok: true, reservations: reservations.map(publicReservation), storage: pool ? 'postgres' : 'file' });
   } catch (error) {
