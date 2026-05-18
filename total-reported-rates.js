@@ -26,7 +26,7 @@ window.addEventListener('load',function(){
       var r=await fetch(API_URL,{cache:'no-store'});
       var d=await r.json();
       if(d&&d.ok&&d.rates){rates=d.rates;localStorage.setItem(CACHE_KEY,JSON.stringify({rates:rates,savedAt:Date.now()}));updateTotal();}
-    }catch(e){console.warn('No se pudo actualizar total reportado con Binance:',e)}
+    }catch(e){console.warn('No se pudo actualizar total reportado:',e)}
   }
   function renderLines(usd){
     if(!rates||!usd)return '';
@@ -47,8 +47,8 @@ window.addEventListener('load',function(){
     var box=ensureBox();
     if(!box)return;
     if(!usd){box.innerHTML='<span>Selecciona números para calcular equivalentes</span>';return;}
-    if(!rates){box.innerHTML='<span>Consultando tasa Binance...</span>';return;}
-    box.innerHTML=renderLines(usd)+'<span class="rate-note">Tasa Binance P2P USDT actualizada</span>';
+    if(!rates){box.innerHTML='<span>Consultando equivalentes...</span>';return;}
+    box.innerHTML=renderLines(usd);
   }
   window.updateTotalReportedRates=updateTotal;
   document.addEventListener('click',function(e){
