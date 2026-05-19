@@ -41,33 +41,37 @@ window.addEventListener('load', function () {
     return Array.isArray(reservations) ? reservations : [];
   }
 
+  function applyList(list) {
+    try { reservations = list; } catch (_) {}
+    localStorage.setItem('jjrifas_v6_final_00_99', JSON.stringify(list));
+    if (typeof render === 'function') render();
+    if (typeof renderAdmin === 'function') renderAdmin();
+  }
+
   window.deleteReceipt = async function (id) {
-    var item = (Array.isArray(reservations) ? reservations : []).find(function (entry) { return entry.id === id; });
+    var baseList = Array.isArray(reservations) ? reservations : [];
+    var item = baseList.find(function (entry) { return entry.id === id; });
     var numbers = item && item.numbers ? item.numbers.join(', ') : '';
     var ok = confirm('¿Eliminar este comprobante' + (numbers ? ' de los números ' + numbers : '') + '? Esta acción liberará los números asociados.');
     if (!ok) return;
 
-    try {
-      var adminResponse = await fetch('/api/admin/reservations', { cache: 'no-store' });
-      var adminData = await adminResponse.json();
-      if (!adminResponse.ok || !adminData.ok) throw new Error(adminData.error || 'No se pudo leer la lista completa.');
+    var previousList = baseList.slice();
+    var cleaned = baseList.filter(function (entry) { return entry.id !== id; });
+    applyList(cleaned);
 
-      var cleaned = (adminData.reservations || []).filter(function (entry) { return entry.id !== id; });
+    try {
       var saveResponse = await fetch('/api/reservations', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reservations: cleaned })
       });
-      var saveData = await saveResponse.json();
+      var saveData = await saveResponse.json().catch(function () { return {}; });
       if (!saveResponse.ok || !saveData.ok) throw new Error(saveData.error || 'No se pudo eliminar el comprobante.');
-
-      try { reservations = cleaned; } catch (_) {}
-      localStorage.setItem('jjrifas_v6_final_00_99', JSON.stringify(cleaned));
-      if (typeof render === 'function') render();
-      if (typeof renderAdmin === 'function') renderAdmin();
+      if (Array.isArray(saveData.reservations)) applyList(saveData.reservations);
       alert('Comprobante eliminado correctamente.');
     } catch (error) {
-      alert(error.message || 'No se pudo eliminar el comprobante.');
+      applyList(previousList);
+      alert(error.message || 'No se pudo eliminar el comprobante. Vuelve a iniciar sesión como administrador e intenta nuevamente.');
     }
   };
 
