@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="selection-fixes.css" />
   <link rel="stylesheet" href="second-payment-mode-fix.css" />
   <link rel="stylesheet" href="cotizave-rate.css" />
+  <link rel="stylesheet" href="raffle-progress.css" />
 </head>
 <body>
   <header class="hero">
@@ -49,6 +50,19 @@
   </header>
 
   <main>
+    <section class="raffle-progress-section" aria-label="Avance de venta de la rifa">
+      <div class="raffle-progress-card">
+        <div class="raffle-progress-track">
+          <div class="raffle-progress-fill" id="raffleProgressFill"></div>
+          <div class="raffle-progress-value" id="raffleProgressValue">0%</div>
+        </div>
+      </div>
+      <div class="raffle-progress-meta">
+        <span>Avance de venta</span>
+        <span id="raffleProgressSold">0 / 100 números comprometidos</span>
+      </div>
+    </section>
+
     <section class="section info-grid">
       <article class="info-card"><span class="icon">①</span><h3>Selecciona</h3><p>Escoge uno o varios números disponibles dentro del tablero.</p></article>
       <article class="info-card"><span class="icon">②</span><h3>Paga</h3><p>Realiza pago completo de $20 o pago parcial de $10 para apartar tu número.</p></article>
@@ -172,5 +186,6 @@
 <script src="admin-backend-status.js"></script>
 <script src="admin-load-receipts.js"></script>
 <script src="admin-pc-complete-load.js"></script>
+<script src="raffle-progress.js"></script>
 </body>
 </html>
