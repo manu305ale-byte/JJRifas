@@ -2,10 +2,10 @@
   "name": "jjrifas-railway",
   "version": "1.0.0",
   "private": true,
-  "description": "JJRifas con API Binance P2P, PostgreSQL y comprobantes en Object Storage para Railway",
-  "main": "boot.js",
+  "description": "JJRifas Railway",
+  "main": "storage-boot.js",
   "scripts": {
-    "start": "node boot.js"
+    "start": "node storage-boot.js"
   },
   "engines": {
     "node": ">=18"
