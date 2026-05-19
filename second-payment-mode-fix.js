@@ -19,9 +19,21 @@
     notice = document.createElement('div');
     notice.id = 'secondPaymentNotice';
     notice.className = 'second-payment-notice hidden';
-    notice.innerHTML = '<strong>Terminar de pagar la totalidad</strong><span>Estás reportando el segundo pago de un número apartado. Carga el comprobante y la referencia para que el administrador lo apruebe.</span>';
+    notice.innerHTML = '<strong>Terminar de pagar la totalidad</strong><span>Este número ya tiene un pago parcial aprobado. Solo debes cargar el comprobante del pago restante de $10 para completar la totalidad.</span>';
     form?.prepend(notice);
     return notice;
+  }
+
+  function ensureSecondPaymentOnlyOption() {
+    let box = document.getElementById('secondPaymentOnlyOption');
+    if (box) return box;
+    const options = document.querySelector('.payment-options');
+    box = document.createElement('div');
+    box.id = 'secondPaymentOnlyOption';
+    box.className = 'second-payment-only-option hidden';
+    box.innerHTML = '<div><strong>Segundo pago parcial</strong><small>Pago restante habilitado: $10 por número</small></div>';
+    options?.insertAdjacentElement('afterend', box);
+    return box;
   }
 
   function setParticipantFieldsRequired(required) {
@@ -31,6 +43,40 @@
       if (required) input.setAttribute('required', 'required');
       else input.removeAttribute('required');
     });
+  }
+
+  function lockNormalPaymentOptions(mode) {
+    const full = document.querySelector('input[name="paymentType"][value="full"]');
+    const partial = document.querySelector('input[name="paymentType"][value="partial"]');
+    const labels = Array.from(document.querySelectorAll('.payment-option'));
+    const onlySecond = ensureSecondPaymentOnlyOption();
+
+    if (mode) {
+      if (full) {
+        full.checked = false;
+        full.disabled = true;
+      }
+      if (partial) {
+        partial.checked = false;
+        partial.disabled = true;
+      }
+      labels.forEach(label => {
+        label.classList.add('payment-option-disabled');
+        label.setAttribute('aria-disabled', 'true');
+      });
+      onlySecond.classList.remove('hidden');
+    } else {
+      if (full) {
+        full.disabled = false;
+        if (!partial?.checked) full.checked = true;
+      }
+      if (partial) partial.disabled = false;
+      labels.forEach(label => {
+        label.classList.remove('payment-option-disabled');
+        label.removeAttribute('aria-disabled');
+      });
+      onlySecond.classList.add('hidden');
+    }
   }
 
   function applySecondPaymentUi() {
@@ -45,6 +91,9 @@
     paymentOptions?.classList.toggle('second-payment-mode-hidden', mode);
     formRows.forEach(row => row.classList.toggle('second-payment-mode-hidden', mode));
     setParticipantFieldsRequired(!mode);
+    lockNormalPaymentOptions(mode);
+
+    if (typeof updateTotalReportedRates === 'function') setTimeout(updateTotalReportedRates, 30);
   }
 
   function prepareSecondPaymentSubmit() {
@@ -64,6 +113,10 @@
     }
   });
 
+  document.addEventListener('change', event => {
+    if (event.target && event.target.name === 'paymentType') setTimeout(applySecondPaymentUi, 0);
+  });
+
   document.addEventListener('submit', event => {
     if (event.target && event.target.id === 'reservationForm') prepareSecondPaymentSubmit();
   }, true);
@@ -72,6 +125,7 @@
   window.addEventListener('load', () => {
     const grid = document.getElementById('numbersGrid');
     if (grid) observer.observe(grid, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    ensureSecondPaymentOnlyOption();
     applySecondPaymentUi();
   });
 
