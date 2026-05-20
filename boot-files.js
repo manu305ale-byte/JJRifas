@@ -6,7 +6,7 @@ let code=fs.readFileSync(src,'utf8');
 const helper=`app.use(express.json({ limit: '20mb' }));
 const RECEIPTS_DIR=process.env.RECEIPTS_DIR||path.join(__dirname,'receipts');
 function receiptExt(r){const n=String(r&&r.name||'').toLowerCase();if(n.endsWith('.pdf'))return 'pdf';if(r&&r.type==='image/png')return 'png';if(r&&r.type==='image/webp')return 'webp';return 'jpg'}
-async function saveReceiptFile(r,id,tag){if(!r||r.url)return r;if(!r.data||!String(r.data).startsWith('data:'))return r;await fs.promises.mkdir(RECEIPTS_DIR,{recursive:true});const file=String(id).replace(/[^a-zA-Z0-9_-]/g,'')+'-'+tag+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)+'.'+receiptExt(r);await fs.promises.writeFile(path.join(RECEIPTS_DIR,file),Buffer.from(String(r.data).split(',')[1]||'','base64'));return{name:r.name||file,type:r.type||'image/jpeg',storage:'file',filename:file,url:'/receipts/'+file}}
+async function saveReceiptFile(r,id,tag){if(!r||r.url)return r;if(!r.data||!String(r.data).startsWith('data:'))return r;await fs.mkdir(RECEIPTS_DIR,{recursive:true});const file=String(id).replace(/[^a-zA-Z0-9_-]/g,'')+'-'+tag+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)+'.'+receiptExt(r);await fs.writeFile(path.join(RECEIPTS_DIR,file),Buffer.from(String(r.data).split(',')[1]||'','base64'));return{name:r.name||file,type:r.type||'image/jpeg',storage:'file',filename:file,url:'/receipts/'+file}}
 `;
 if(!code.includes('saveReceiptFile'))code=code.replace("app.use(express.json({ limit: '20mb' }));",helper);
 function swap(a,b,r){const s=code.indexOf(a),e=code.indexOf(b,s);if(s<0||e<0)throw Error('ruta no encontrada');code=code.slice(0,s)+r+code.slice(e)}
