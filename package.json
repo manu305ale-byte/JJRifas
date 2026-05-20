@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "JJRifas con API Binance P2P y PostgreSQL para Railway",
-  "main": "boot.js",
+  "main": "boot-files.js",
   "scripts": {
-    "start": "node boot.js"
+    "start": "node boot-files.js"
   },
   "engines": {
     "node": ">=18"
